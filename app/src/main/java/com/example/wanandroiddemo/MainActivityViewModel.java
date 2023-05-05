@@ -38,7 +38,7 @@ public class MainActivityViewModel extends ViewModel {
     private BaseLoginFragment baseLoginFragment;
     private MutableLiveData<Boolean> isLogin;
     private String loginUrl = "https://www.wanandroid.com/user/login";
-    private String username , password;
+    private String username , password , repassword;
     private LoginBean loginBean;
     private final int LOGIN_SUCCEED = 1;
     private final int LOGIN_FAILED = -1;
@@ -56,16 +56,34 @@ public class MainActivityViewModel extends ViewModel {
             }
         }
     };
+
     public MainActivityViewModel(){
         isLogin = new MutableLiveData<>();
         isLogin.setValue(null);
     }
 
-    public void sendLoginRequest(){
-        RequestBody requestBody = new FormBody.Builder()
-                .add("username" , getUsername())
-                .add("password" , getPassword())
-                .build();
+    /**
+     * 生成RequestBody
+     * @param isLogin 是否是登录(不是登录不用加repassword)
+     */
+    public RequestBody generateRequestBody(boolean isLogin){
+        RequestBody requestBody;
+        if (isLogin){
+            requestBody = new FormBody.Builder()
+                    .add("username" , getUsername())
+                    .add("password" , getPassword())
+                    .build();
+        }else {
+            requestBody = new FormBody.Builder()
+                    .add("username" , getUsername())
+                    .add("password" , getPassword())
+                    .add("repassword" , getRepassword())
+                    .build();
+        }
+        return requestBody;
+    }
+
+    public void sendLoginRequest(RequestBody requestBody){
         Callback callback = new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -132,6 +150,14 @@ public class MainActivityViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getIsLogin() {
         return isLogin;
+    }
+
+    public String getRepassword() {
+        return repassword;
+    }
+
+    public void setRepassword(String repassword) {
+        this.repassword = repassword;
     }
 
     public HomeFragment getHomeFragment() {

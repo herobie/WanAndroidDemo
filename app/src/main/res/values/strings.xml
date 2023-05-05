@@ -18,4 +18,5 @@
     <string name="to_register">To register >></string>
     <string name="confirm">CONFIRM</string>
     <string name="register">Register</string>
+    <string name="input_repassword">input repassword here</string>
 </resources>

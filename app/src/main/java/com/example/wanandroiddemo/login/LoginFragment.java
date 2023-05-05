@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +26,7 @@ import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.databinding.FragmentLoginBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class LoginFragment extends Fragment implements View.OnClickListener{
+public class LoginFragment extends Fragment implements View.OnClickListener , TextWatcher {
     private FragmentLoginBinding binding;
     private MainActivityViewModel viewModel;
     @Override
@@ -43,6 +45,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public void initView(){
         viewModel = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
         binding.loginLogin.setOnClickListener(this);
+        binding.loginUsername.addTextChangedListener(this);
+        binding.loginPassword.addTextChangedListener(this);
         binding.loginCancel.setOnClickListener(this);
         binding.loginToRegister.setOnClickListener(this);
         viewModel.getIsLogin().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -62,10 +66,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.login_login:
                 if (!binding.loginUsername.getText().toString().isEmpty()){
-                    viewModel.setUsername(binding.loginUsername.getText().toString());
                     if (!binding.loginPassword.getText().toString().isEmpty()){
-                        viewModel.setPassword(binding.loginPassword.getText().toString());
-                        viewModel.sendLoginRequest();
+                        viewModel.sendLoginRequest(viewModel.generateRequestBody(false));
                     }else {
                         binding.loginWarning.setText("密码不能为空");
                     }
@@ -81,4 +83,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        viewModel.setUsername(binding.loginUsername.getText().toString());//保存输入
+        viewModel.setPassword(binding.loginPassword.getText().toString());
+    }
 }
