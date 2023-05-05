@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_home_view"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_margin="3dp"
+    app:cardCornerRadius="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.lm.piccolo.view.PiccoloLayout
+            android:id="@+id/piccoloLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+
+            <TextView
+                android:id="@+id/item_home_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="325dp"
+                android:text="@string/title_placeholder"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </com.lm.piccolo.view.PiccoloLayout>
+
+        <com.lm.piccolo.view.PiccoloLayout
+            android:id="@+id/piccoloLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="@+id/piccoloLayout2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+
+            <TextView
+                android:id="@+id/item_author"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:maxWidth="250dp"
+                android:text="@string/author_placeholder"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/item_home_title" />
+        </com.lm.piccolo.view.PiccoloLayout>
+
+
+        <com.lm.piccolo.view.PiccoloLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.941"
+            app:layout_constraintStart_toEndOf="@+id/piccoloLayout3"
+            app:layout_constraintTop_toTopOf="@+id/piccoloLayout3"
+            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+
+            <TextView
+                android:id="@+id/item_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="@string/update_placeholder" />
+        </com.lm.piccolo.view.PiccoloLayout>
+
+        <com.lm.piccolo.view.PiccoloLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/piccoloLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/piccoloLayout2"
+            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+
+            <TextView
+                android:id="@+id/item_chapter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="200dp"
+                android:text="@string/superChapterName_placeholder"
+                tools:layout_editor_absoluteY="115dp" />
+        </com.lm.piccolo.view.PiccoloLayout>
+
+        <com.lm.piccolo.view.PiccoloLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+
+            <ImageButton
+                android:id="@+id/item_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_baseline_star_border_24" />
+        </com.lm.piccolo.view.PiccoloLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

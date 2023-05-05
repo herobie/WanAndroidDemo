@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/shortcuts_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="5dp">
+
+        <Button
+            android:id="@+id/shortcuts_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/light_white"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="TextView"
+            android:textColor="@color/light_black"
+            android:textSize="12sp" />
+    </LinearLayout>
+</layout>

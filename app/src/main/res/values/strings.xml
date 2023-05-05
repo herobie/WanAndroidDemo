@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">WanAndroidDemo</string>
+    <string name="Home">Home</string>
+    <string name="project">Project</string>
+    <string name="navigation">Navigation</string>
+    <string name="collections">Collections</string>
+    <string name="title_placeholder" translatable="false">每日一问 | Android 默认开启硬件加速与设置hardwareAccelerated是一回事吗？</string>
+    <string name="author_placeholder">Author: anonymous</string>
+    <string name="update_placeholder">13 hours ago</string>
+    <string name="superChapterName_placeholder">Chapter: Lobby Tab</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="describe_placeholder" translatable="false">知天气主要功能包含关注城市天气页面，城市管理页面，城市搜索页面等功能，小到小时级天气信息，空气质量信息以及风力风向，大到7天天气预报以及全国范围内的天气云图。知天气懂天气更懂你。\\r\\n\\r\\n知天气主要采用Flutter技术开发，采用现阶段非常流行的Bloc框架。</string>
+    <string name="author_placeholder2">Anonymous</string>
+    <string name="login_title">Welcome</string>
+    <string name="input_username">input username here</string>
+    <string name="input_password">input password here</string>
+    <string name="to_register">To register >></string>
+    <string name="confirm">CONFIRM</string>
+    <string name="register">Register</string>
+</resources>
