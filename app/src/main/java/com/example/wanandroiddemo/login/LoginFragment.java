@@ -19,13 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.wanandroiddemo.MainActivityViewModel;
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.databinding.FragmentLoginBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginFragment extends Fragment implements View.OnClickListener{
     private FragmentLoginBinding binding;
-    private LoginViewModel viewModel;
+    private MainActivityViewModel viewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,14 +41,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     public void initView(){
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(MainActivityViewModel.class);
         binding.loginLogin.setOnClickListener(this);
         binding.loginCancel.setOnClickListener(this);
         binding.loginToRegister.setOnClickListener(this);
-        viewModel.getIsFailed().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        viewModel.getIsLogin().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
+                if (aBoolean != null && !aBoolean){
                     binding.loginWarning.setText(viewModel.getLoginBean().getErrorMsg());
                 }
             }
