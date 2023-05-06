@@ -79,13 +79,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.home:
-                        replaceFragment(mainActivityViewModel.getHomeFragment());
+                        replaceFragment(mainActivityViewModel.getHomeFragment() ,false);
                         break;
                     case R.id.project:
-                        replaceFragment(mainActivityViewModel.getProjectFragment());
+                        replaceFragment(mainActivityViewModel.getProjectFragment(),false);
                         break;
                     case R.id.Navigation:
-                        replaceFragment(mainActivityViewModel.getNavFragment());
+                        replaceFragment(mainActivityViewModel.getNavFragment(),false);
                         break;
                     case R.id.collections:
                         break;
@@ -130,10 +130,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    public void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment , boolean isAddToBackStack){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragContainer , fragment);
-        transaction.addToBackStack(null);
+        if (isAddToBackStack){//判断是否加入返回栈，一般是左侧滑动导航栏进入的页面需要
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.login:
-                replaceFragment(mainActivityViewModel.getBaseLoginFragment());
+                replaceFragment(mainActivityViewModel.getBaseLoginFragment() , true);
                 mDrawerLayout.closeDrawers();
                 break;
         }
