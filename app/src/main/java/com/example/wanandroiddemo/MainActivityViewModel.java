@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.wanandroiddemo.collections.CollectionsBaseFragment;
 import com.example.wanandroiddemo.home.HomeFragment;
 import com.example.wanandroiddemo.login.BaseLoginFragment;
 import com.example.wanandroiddemo.login.LoginFragment;
@@ -36,6 +37,7 @@ public class MainActivityViewModel extends ViewModel {
     private HomeFragment homeFragment;
     private NavFragment navFragment;
     private BaseLoginFragment baseLoginFragment;
+    private CollectionsBaseFragment collectionsBaseFragment;
     private MutableLiveData<Boolean> isLogin;
     private String loginUrl = "https://www.wanandroid.com/user/login";
     private String username , password , repassword;
@@ -187,5 +189,12 @@ public class MainActivityViewModel extends ViewModel {
             baseLoginFragment = new BaseLoginFragment();
         }
         return baseLoginFragment;
+    }
+
+    public CollectionsBaseFragment getCollectionsBaseFragment() {
+        if (collectionsBaseFragment == null){
+            collectionsBaseFragment = new CollectionsBaseFragment();
+        }
+        return collectionsBaseFragment;
     }
 }

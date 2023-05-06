@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     replaceFragment(mainActivityViewModel.getNavFragment(),false);
                     break;
                 case R.id.collections:
+                    replaceFragment(mainActivityViewModel.getCollectionsBaseFragment() , false);
                     break;
             }
             return true;
