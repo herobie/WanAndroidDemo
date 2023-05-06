@@ -7,21 +7,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.Manifest;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,36 +24,28 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+import com.example.wanandroiddemo.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Toolbar toolbar;
-    private BottomNavigationView bottomNavigationView;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView side_navigation;
     private FragmentContainerView fragContainer;
-    private CircleImageView navigation_profile;
     private LinearLayout navigation_background;
     private TextView navigation_username , navigation_brief;
     private MainActivityViewModel mainActivityViewModel;
     private FragmentManager fragmentManager;
+    private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this , R.layout.activity_main);
         acquirePermissions();
         initView();
     }
 
     protected void initView(){
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
-        fragContainer = findViewById(R.id.fragContainer);
-        mDrawerLayout = findViewById(R.id.mDrawerLayout);
+        binding.setLifecycleOwner(this);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -66,32 +53,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
         }
-        side_navigation = findViewById(R.id.side_navigation);
-        side_navigation.setNavigationItemSelectedListener(this);
-        View headerLayout = side_navigation.inflateHeaderView(R.layout.navigation_header);
-        navigation_profile = headerLayout.findViewById(R.id.navigation_profile);
+        binding.sideNavigation.setNavigationItemSelectedListener(this);
+        View headerLayout = binding.sideNavigation.inflateHeaderView(R.layout.navigation_header);
         navigation_username = headerLayout.findViewById(R.id.navigation_username);
         navigation_brief = headerLayout.findViewById(R.id.navigation_brief);
         navigation_background = headerLayout.findViewById(R.id.navigation_background);
         fragmentManager = getSupportFragmentManager();
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.home:
-                        replaceFragment(mainActivityViewModel.getHomeFragment() ,false);
-                        break;
-                    case R.id.project:
-                        replaceFragment(mainActivityViewModel.getProjectFragment(),false);
-                        break;
-                    case R.id.Navigation:
-                        replaceFragment(mainActivityViewModel.getNavFragment(),false);
-                        break;
-                    case R.id.collections:
-                        break;
-                }
-                return true;
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.home:
+                    replaceFragment(mainActivityViewModel.getHomeFragment() ,false);
+                    break;
+                case R.id.project:
+                    replaceFragment(mainActivityViewModel.getProjectFragment(),false);
+                    break;
+                case R.id.Navigation:
+                    replaceFragment(mainActivityViewModel.getNavFragment(),false);
+                    break;
+                case R.id.collections:
+                    break;
             }
+            return true;
         });
     }
 
@@ -102,12 +84,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.menu_search_view:
                 break;
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                binding.mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
         }
         return true;
@@ -151,12 +134,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.login:
                 replaceFragment(mainActivityViewModel.getBaseLoginFragment() , true);
-                mDrawerLayout.closeDrawers();
+                binding.mDrawerLayout.closeDrawers();
                 break;
         }
         return false;

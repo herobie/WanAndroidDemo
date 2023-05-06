@@ -16,4 +16,5 @@
     <string name="confirm">确认</string>
     <string name="register">注册</string>
     <string name="input_repassword">请再次输入密码</string>
+    <string name="cancel_collected">取消收藏</string>
 </resources>
