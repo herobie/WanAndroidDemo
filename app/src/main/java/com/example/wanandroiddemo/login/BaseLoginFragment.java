@@ -77,7 +77,8 @@ public class BaseLoginFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            login_viewPage.setCurrentItem(1);//切换至注册页面
+            int position = intent.getIntExtra("changeCurrentItem" , 0);
+            login_viewPage.setCurrentItem(position);//切换至注册页面
         }
     }
 }

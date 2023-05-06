@@ -1,5 +1,6 @@
 package com.example.wanandroiddemo.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener ,
                 }
                 break;
             case R.id.register_cancel:
+                Intent toLogin = new Intent("toRegister");
+                toLogin.putExtra("changeCurrentItem" , 0);
+                getContext().sendBroadcast(toLogin);
                 break;
         }
     }

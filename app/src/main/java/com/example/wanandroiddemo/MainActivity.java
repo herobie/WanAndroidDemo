@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.Navigation:
                         replaceFragment(mainActivityViewModel.getNavFragment());
                         break;
+                    case R.id.collections:
+                        break;
                 }
                 return true;
             }
@@ -130,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void replaceFragment(Fragment fragment){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragContainer , fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 

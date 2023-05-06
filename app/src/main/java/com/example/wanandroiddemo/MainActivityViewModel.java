@@ -40,6 +40,7 @@ public class MainActivityViewModel extends ViewModel {
     private String loginUrl = "https://www.wanandroid.com/user/login";
     private String username , password , repassword;
     private LoginBean loginBean;
+    private int currentPage = 0;
     private final int LOGIN_SUCCEED = 1;
     private final int LOGIN_FAILED = -1;
     private Handler handler = new Handler(Looper.getMainLooper()){
@@ -58,7 +59,7 @@ public class MainActivityViewModel extends ViewModel {
     };
 
     public MainActivityViewModel(){
-        isLogin = new MutableLiveData<>();
+        isLogin = new MutableLiveData<>();//是否登录，默认为Null,如果登录成功为true，否则为false
         isLogin.setValue(null);
     }
 

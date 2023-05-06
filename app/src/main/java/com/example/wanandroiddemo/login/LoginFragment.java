@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener , Te
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.login_cancel:
+                getActivity().onBackPressed();
                 break;
             case R.id.login_login:
                 if (!binding.loginUsername.getText().toString().isEmpty()){
@@ -77,11 +79,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener , Te
                 break;
             case R.id.login_toRegister:
                 Intent toRegister = new Intent("toRegister");
+                toRegister.putExtra("changeCurrentItem" , 1);
                 getContext().sendBroadcast(toRegister);
                 break;
         }
     }
-
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
