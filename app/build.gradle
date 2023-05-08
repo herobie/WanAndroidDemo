@@ -51,4 +51,7 @@ dependencies {
     implementation 'io.github.wslaimin:piccolo:1.0.1'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    def room_version = "2.2.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }

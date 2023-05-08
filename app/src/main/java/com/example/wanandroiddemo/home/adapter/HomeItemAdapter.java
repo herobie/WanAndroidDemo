@@ -1,6 +1,7 @@
 package com.example.wanandroiddemo.home.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,17 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.home.HomeFragmentViewModel;
+import com.example.wanandroiddemo.home.bean.BannerBean;
 import com.example.wanandroiddemo.home.bean.HomeBean;
 import com.youth.banner.Banner;
+import com.youth.banner.adapter.BannerImageAdapter;
+import com.youth.banner.holder.BannerImageHolder;
 import com.youth.banner.indicator.CircleIndicator;
 import com.youth.banner.listener.OnBannerListener;
 
@@ -23,13 +31,17 @@ public class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.ViewHo
     private Context context;
 //    private List<HomeBean> homeBeans;
     private HomeBean homeBean;
-    private HomeFragmentViewModel homeFragmentViewModel;
+    private BannerBean bannerBean;
     private LifecycleOwner lifecycleOwner;
-    public HomeItemAdapter(Context context, HomeBean homeBean , HomeFragmentViewModel homeFragmentViewModel , LifecycleOwner lifecycleOwner) {
+    public HomeItemAdapter(Context context, HomeBean homeBean , LifecycleOwner lifecycleOwner) {
         this.context = context;
         this.homeBean = homeBean;
-        this.homeFragmentViewModel = homeFragmentViewModel;
+//        this.homeFragmentViewModel = homeFragmentViewModel;
         this.lifecycleOwner = lifecycleOwner;
+    }
+
+    public void setBannerBean(BannerBean bannerBean) {
+        this.bannerBean = bannerBean;
     }
 
     @NonNull
@@ -73,16 +85,28 @@ public class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.ViewHo
             holder.item_update.setText(homeBean.getDatas().get(position).getNiceDate());
         }else if (position == 0){
             try{
-                holder.banner.setAdapter(homeFragmentViewModel.getHomeBannerAdapter())
-                        .addBannerLifecycleObserver(lifecycleOwner)
-                        .setIndicator(new CircleIndicator(context))
-                        .setOnBannerListener(new OnBannerListener() {
-                            @Override
-                            public void OnBannerClick(Object data, int position) {
-
-                            }
-                        });
+                holder.banner.setAdapter(new BannerImageAdapter<BannerBean.Data>(bannerBean.getData()) {
+                    @Override
+                    public void onBindView(BannerImageHolder holder, BannerBean.Data data, int position, int size) {
+                        Glide.with(context)
+                                .load(data.getImagePath())
+                                .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
+                                .placeholder(R.drawable.ic_baseline_photo_24)
+                                .error(R.drawable.ic_baseline_error_24)
+                                .into(holder.imageView);
+                    }
+                });
+//                holder.banner.setAdapter(bannerAdapter)
+//                        .addBannerLifecycleObserver(lifecycleOwner)
+//                        .setIndicator(new CircleIndicator(context))
+//                        .setOnBannerListener(new OnBannerListener() {
+//                            @Override
+//                            public void OnBannerClick(Object data, int position) {
+//
+//                            }
+//                        });
             }catch (Exception e){
+                Log.w(Constant.TAG , e.getMessage());
             }
         }
     }

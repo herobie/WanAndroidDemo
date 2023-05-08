@@ -1,5 +1,9 @@
 package com.example.wanandroiddemo.home.bean;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
 public class BannerBean {
@@ -22,9 +26,22 @@ public class BannerBean {
         return data;
     }
 
+    @Entity
     public class Data{
+        @ColumnInfo
         private String desc , imagePath , url , title;
+        @ColumnInfo
         private int id , isVisible;
+        @PrimaryKey(autoGenerate = true)
+        private int bannerId;
+
+        public int getBannerId() {
+            return bannerId;
+        }
+
+        public void setBannerId(int bannerId) {
+            this.bannerId = bannerId;
+        }
 
         public String getDesc() {
             return desc;
@@ -48,6 +65,30 @@ public class BannerBean {
 
         public int getIsVisible() {
             return isVisible;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+        public void setImagePath(String imagePath) {
+            this.imagePath = imagePath;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setIsVisible(int isVisible) {
+            this.isVisible = isVisible;
         }
     }
 }
