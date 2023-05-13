@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TreeAdapter extends RecyclerView.Adapter<TreeAdapter.ViewHolder> {
     private List<TreeBean.TreeData.Children> children;
-
+    private ItemNavigationBinding binding;
     public TreeAdapter() {
     }
 
@@ -27,14 +27,14 @@ public class TreeAdapter extends RecyclerView.Adapter<TreeAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemNavigationBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()) , R.layout.item_navigation , parent , false);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()) , R.layout.item_navigation , parent , false);
         ViewHolder holder = new ViewHolder(binding.getRoot());
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ItemNavigationBinding binding = DataBindingUtil.getBinding(holder.itemView);
+        binding = DataBindingUtil.getBinding(holder.itemView);
         binding.navigationItem.setText(children.get(position).getName());
     }
 

@@ -1,5 +1,9 @@
 package com.example.wanandroiddemo.project.bean;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
 public class IDBean {
@@ -21,9 +25,20 @@ public class IDBean {
         return data;
     }
 
+    @Entity
     public class DataBean{
+        @ColumnInfo
         private String name;
+        @PrimaryKey
         private int id;
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public int getId() {
             return id;

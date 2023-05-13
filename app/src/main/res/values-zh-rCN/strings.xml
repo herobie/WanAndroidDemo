@@ -17,4 +17,9 @@
     <string name="register">注册</string>
     <string name="input_repassword">请再次输入密码</string>
     <string name="cancel_collected">取消收藏</string>
+    <string name="no_login">请先登录！点击前往登录页面</string>
+    <string name="add_web">添加</string>
+    <string name="input_title">请输入名称</string>
+    <string name="input_link">请输入链接地址</string>
+    <string name="input_author">请输入作者</string>
 </resources>

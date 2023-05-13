@@ -20,4 +20,9 @@
     <string name="register">Register</string>
     <string name="input_repassword">input repassword here</string>
     <string name="cancel_collected">cancel collected</string>
+    <string name="no_login">Click here to login</string>
+    <string name="add_web">add new web</string>
+    <string name="input_title">input title</string>
+    <string name="input_link">input link</string>
+    <string name="input_author">input author</string>
 </resources>

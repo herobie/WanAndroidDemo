@@ -12,25 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.project.adapter.ProjectItemAdapter;
-import com.example.wanandroiddemo.project.bean.ChapterBean;
 import com.google.android.material.tabs.TabLayout;
 import com.lm.piccolo.Piccolo;
 import com.lm.piccolo.view.ConductorForAdapter;
-
-import java.io.IOException;
-import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class ProjectFragment extends Fragment implements TabLayout.OnTabSelectedListener{
     private ProjectFragmentViewModel viewModel;
@@ -60,20 +50,18 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
         project_swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                viewModel.acquireData(viewModel.getLastPosition());
+//                viewModel.acquireData(viewModel.getLastPosition());
+                viewModel.getRepository().requestItemData(viewModel.getLastPosition().getValue());
                 project_swipe_refresh.setRefreshing(true);
             }
         });
         project_rv = getView().findViewById(R.id.project_rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         project_rv.setLayoutManager(layoutManager);
-        projectItemAdapter = new ProjectItemAdapter(getContext());
+        projectItemAdapter = new ProjectItemAdapter(getContext() , viewModel);
         ConductorForAdapter conductorForAdapter = Piccolo.createForList(project_rv);
-//        alertDialog = new AlertDialog.Builder(getContext())
-//                .setTitle("加载中")
-//                .setMessage("Loading ...")
-//                .show();
         viewModel.getIsIDAcquired().setValue(false);
+        //观察标签是否加载完毕
         viewModel.getIsIDAcquired().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -84,6 +72,7 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
                 }
             }
         });
+        //观察页面是否加载完毕
         viewModel.getIsItemParseFinished().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -107,12 +96,15 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
                 }
             }
         });
-        viewModel.acquireID();
+//        viewModel.acquireID();
+        viewModel.getRepository().requestID();
     }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        viewModel.acquireData(tab.getPosition());
+//        viewModel.acquireData(tab.getPosition());
+        viewModel.getLastPosition().setValue(tab.getPosition());
+        viewModel.getRepository().requestItemData(tab.getPosition());
     }
 
     @Override

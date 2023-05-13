@@ -68,7 +68,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener ,
                     binding.registerWarning.setText("用户名不能为空");
                 }
                 if (isInfoComplete){
-                    viewModel.sendLoginRequest(viewModel.generateRequestBody(false));
+                    viewModel.getMainRepository().sendLoginRequest(viewModel.getMainRepository().generateRequestBody(false));
                 }
                 break;
             case R.id.register_cancel:

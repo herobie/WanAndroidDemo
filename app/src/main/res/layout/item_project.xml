@@ -1,130 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:layout_margin="3dp"
-    app:cardCornerRadius="3dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+        <variable
+            name="projectViewModel"
+            type="com.example.wanandroiddemo.project.ProjectFragmentViewModel" />
+
+        <variable
+            name="chapterData"
+            type="com.example.wanandroiddemo.project.bean.ChapterBean.ProjectData" />
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="250dp"
+        android:layout_margin="3dp"
+        app:cardCornerRadius="3dp">
 
-        <com.lm.piccolo.view.PiccoloLayout
-            android:id="@+id/piccoloLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:mask="com.lm.piccolo.drawable.ImageShiningDrawable">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/project_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/project_picture"
-                android:layout_width="125dp"
-                android:layout_height="225dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/project_placeholder" />
-        </com.lm.piccolo.view.PiccoloLayout>
-
-
-        <com.lm.piccolo.view.PiccoloLayout
-            android:id="@+id/piccoloLayout4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:maxWidth="280dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/piccoloLayout"
-            app:layout_constraintTop_toTopOf="@+id/piccoloLayout"
-            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
-
-            <TextView
-                android:id="@+id/project_title"
-                android:layout_width="match_parent"
+            <com.lm.piccolo.view.PiccoloLayout
+                android:id="@+id/piccoloLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mask="com.lm.piccolo.drawable.ImageShiningDrawable">
+
+                <ImageView
+                    android:id="@+id/project_picture"
+                    android:layout_width="125dp"
+                    android:layout_height="225dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/project_placeholder" />
+            </com.lm.piccolo.view.PiccoloLayout>
+
+
+            <com.lm.piccolo.view.PiccoloLayout
+                android:id="@+id/piccoloLayout4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
                 android:maxWidth="280dp"
-                android:maxLines="2"
-                android:text="@string/title_placeholder"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </com.lm.piccolo.view.PiccoloLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/piccoloLayout"
+                app:layout_constraintTop_toTopOf="@+id/piccoloLayout"
+                app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
 
-        <com.lm.piccolo.view.PiccoloLayout
-            android:id="@+id/piccoloLayout5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="13dp"
-            app:mask="com.lm.piccolo.drawable.TextShiningDrawable"
-            app:layout_constraintStart_toEndOf="@+id/piccoloLayout"
-            app:layout_constraintTop_toBottomOf="@+id/piccoloLayout4">
+                <TextView
+                    android:id="@+id/project_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxWidth="280dp"
+                    android:maxLines="2"
+                    android:minWidth="260dp"
+                    android:text="@{chapterData.getTitle()}"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </com.lm.piccolo.view.PiccoloLayout>
 
-            <TextView
-                android:id="@+id/project_describe"
+            <com.lm.piccolo.view.PiccoloLayout
+                android:id="@+id/piccoloLayout5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxWidth="287dp"
-                android:maxLines="4"
-                android:text="@string/describe_placeholder"
-                android:textSize="12sp" />
-        </com.lm.piccolo.view.PiccoloLayout>
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="13dp"
+                app:layout_constraintStart_toEndOf="@+id/piccoloLayout"
+                app:layout_constraintTop_toBottomOf="@+id/piccoloLayout4"
+                app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
 
-        <com.lm.piccolo.view.PiccoloLayout
-            android:id="@+id/piccoloLayout6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="185dp"
-            app:layout_constraintStart_toStartOf="@+id/piccoloLayout5"
-            app:layout_constraintTop_toTopOf="parent"
-            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+                <TextView
+                    android:id="@+id/project_describe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxWidth="287dp"
+                    android:maxLines="4"
+                    android:minWidth="240dp"
+                    android:text="@{chapterData.getDesc()}"
+                    android:textSize="12sp" />
+            </com.lm.piccolo.view.PiccoloLayout>
 
-            <TextView
-                android:id="@+id/project_author"
+            <com.lm.piccolo.view.PiccoloLayout
+                android:id="@+id/piccoloLayout6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="200dp"
-                android:text="@string/author_placeholder2"
-                android:textColor="@color/black" />
-        </com.lm.piccolo.view.PiccoloLayout>
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="185dp"
+                app:layout_constraintStart_toStartOf="@+id/piccoloLayout5"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
 
-        <com.lm.piccolo.view.PiccoloLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:mask="com.lm.piccolo.drawable.TextShiningDrawable"
-            app:layout_constraintStart_toStartOf="@+id/piccoloLayout6"
-            app:layout_constraintTop_toBottomOf="@+id/piccoloLayout6">
+                <TextView
+                    android:id="@+id/project_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="200dp"
+                    android:minWidth="150dp"
+                    android:text="@{chapterData.getAuthor().isEmpty()?chapterData.getShareUser():chapterData.getAuthor()}"
+                    android:textColor="@color/black" />
+            </com.lm.piccolo.view.PiccoloLayout>
 
-            <TextView
-                android:id="@+id/project_update"
+            <com.lm.piccolo.view.PiccoloLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/update_placeholder"
-                android:textSize="12sp" />
-        </com.lm.piccolo.view.PiccoloLayout>
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/piccoloLayout6"
+                app:layout_constraintTop_toBottomOf="@+id/piccoloLayout6"
+                app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
 
-        <com.lm.piccolo.view.PiccoloLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="21dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/piccoloLayout6"
-            app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
+                <TextView
+                    android:id="@+id/project_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:text="@{chapterData.getAuthor().isEmpty()?chapterData.getNiceShareDate():chapterData.getNiceDate()}"
+                    android:textSize="12sp" />
+            </com.lm.piccolo.view.PiccoloLayout>
 
-            <ImageButton
-                android:id="@+id/project_star"
+            <com.lm.piccolo.view.PiccoloLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                app:srcCompat="@drawable/ic_baseline_star_border_24" />
-        </com.lm.piccolo.view.PiccoloLayout>
+                android:layout_marginEnd="21dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/piccoloLayout6"
+                app:mask="com.lm.piccolo.drawable.TextShiningDrawable">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/project_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_baseline_star_border_24" />
+            </com.lm.piccolo.view.PiccoloLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

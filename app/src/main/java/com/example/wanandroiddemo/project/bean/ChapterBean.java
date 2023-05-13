@@ -1,5 +1,9 @@
 package com.example.wanandroiddemo.project.bean;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
 public class ChapterBean {
@@ -23,9 +27,24 @@ public class ChapterBean {
         return datas;
     }
 
+    @Entity
     public class ProjectData{
+        @ColumnInfo
         private String chapterName , desc , envelopePic , link , niceDate , niceShareDate , author , projectLink , title , shareUser;
+        @ColumnInfo
         private int id , chapterId , courseId;
+        @PrimaryKey
+        private int projectId;
+        @ColumnInfo
+        private boolean collect;
+
+        public void setProjectId(int projectId) {
+            this.projectId = projectId;
+        }
+
+        public int getProjectId() {
+            return projectId;
+        }
 
         public String getChapterName() {
             return chapterName;
@@ -77,6 +96,66 @@ public class ChapterBean {
 
         public String getShareUser() {
             return shareUser;
+        }
+
+        public void setChapterName(String chapterName) {
+            this.chapterName = chapterName;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+        public void setEnvelopePic(String envelopePic) {
+            this.envelopePic = envelopePic;
+        }
+
+        public void setLink(String link) {
+            this.link = link;
+        }
+
+        public void setNiceDate(String niceDate) {
+            this.niceDate = niceDate;
+        }
+
+        public void setNiceShareDate(String niceShareDate) {
+            this.niceShareDate = niceShareDate;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public void setProjectLink(String projectLink) {
+            this.projectLink = projectLink;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setShareUser(String shareUser) {
+            this.shareUser = shareUser;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setChapterId(int chapterId) {
+            this.chapterId = chapterId;
+        }
+
+        public void setCourseId(int courseId) {
+            this.courseId = courseId;
+        }
+
+        public boolean isCollect() {
+            return collect;
+        }
+
+        public void setCollect(boolean collect) {
+            this.collect = collect;
         }
     }
 }

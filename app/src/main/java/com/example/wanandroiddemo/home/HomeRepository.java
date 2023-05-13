@@ -1,4 +1,4 @@
-package com.example.wanandroiddemo.home.cache;
+package com.example.wanandroiddemo.home;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,6 +10,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.wanandroiddemo.cache.Cache;
+import com.example.wanandroiddemo.cache.home.BannerDao;
+import com.example.wanandroiddemo.cache.home.HomeDao;
+import com.example.wanandroiddemo.collections.bean.ResponseBean;
+import com.example.wanandroiddemo.cookieStore.CookieJarImpl;
+import com.example.wanandroiddemo.cookieStore.PersistentCookieStore;
 import com.example.wanandroiddemo.home.bean.BannerBean;
 import com.example.wanandroiddemo.home.bean.HomeBean;
 import com.google.gson.Gson;
@@ -21,8 +27,10 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeRepository {
@@ -31,9 +39,12 @@ public class HomeRepository {
     private BannerDao bannerDao;
     private HomeBean homeBean;
     private BannerBean bannerBean;
+    private ResponseBean responseBean;
     private MutableLiveData<Boolean> isLoadingSuccess;
     private String homeUrl = "https://www.wanandroid.com/article/list/0/json";
     private String bannerUrl = "https://www.wanandroid.com/banner/json";
+    private final String uncollectUrl = "https://www.wanandroid.com/lg/uncollect_originId/";//id拼接上去
+    private final String collectUrl = "https://www.wanandroid.com/lg/collect/";//id拼接上去
     private final int PHRASE_SUCCEED = 1;
     private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -47,11 +58,12 @@ public class HomeRepository {
             }
         }
     };
+
     public HomeRepository(Context context) {
         this.context = context;
-        HomeCache homeCache = HomeCache.getInstance(context.getApplicationContext());
-        homeDao = homeCache.getHomeDao();
-        bannerDao = homeCache.getBannerDao();
+        Cache cache = Cache.getInstance(context.getApplicationContext());
+        homeDao = cache.getHomeDao();
+        bannerDao = cache.getBannerDao();
         isLoadingSuccess = new MutableLiveData<>();
         isLoadingSuccess.setValue(false);
     }
@@ -60,7 +72,7 @@ public class HomeRepository {
      * 请求主页面的数据,先获取item数据，获取成功后再获取banner,最后将这些加入room缓存
      */
     public void refresh(){
-        new ClearCacheData().start();//先清空所有缓存
+        deleteHome();//先清空所有缓存
         isLoadingSuccess.setValue(false);//将是否加载完毕设置为否
         Callback bannerCallback = new Callback() {//banner的
             @Override
@@ -91,10 +103,57 @@ public class HomeRepository {
     }
 
     /**
+     * 收藏文章
+     * @param id 文章id
+     */
+    public void requestCollect(int id){
+        String url = collectUrl + String.valueOf(id) + "/json";
+        RequestBody requestBody = new FormBody.Builder()
+                .build();
+        sendPostRequest(url, requestBody, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                parseResponse(response.body().string());
+            }
+        });
+    }
+
+    /**
+     * 发送取消收藏请求
+     */
+    public void requestUncollect(int id){
+        String url = uncollectUrl + String.valueOf(id) + "/json";
+        RequestBody requestBody = new FormBody.Builder()
+                .build();
+        Callback callback = new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                parseResponse(response.body().string());
+            }
+        };
+        sendPostRequest(url , requestBody , callback);
+    }
+
+    protected void parseResponse(String responseData){
+        Gson gson = new Gson();
+        responseBean = gson.fromJson(responseData , ResponseBean.class);
+    }
+
+    /**
      * 解析item的数据
      * @param responseData
      */
-    public void parseItemData(String responseData){
+    protected void parseItemData(String responseData){
         try {
             JSONObject jsonObject = new JSONObject(responseData);
             String content = jsonObject.getString("data");
@@ -110,7 +169,7 @@ public class HomeRepository {
      * 解析banner的数据
      * @param responseData
      */
-    public void parseBannerData(String responseData){
+    protected void parseBannerData(String responseData){
         Gson gson = new Gson();
         bannerBean = gson.fromJson(responseData , BannerBean.class);
     }
@@ -123,6 +182,28 @@ public class HomeRepository {
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url)
+                        .build();
+                client.newCall(request).enqueue(callback);
+            }
+        }).start();
+    }
+
+    /**
+     * 发送post请求
+     * @param url
+     * @param requestBody
+     * @param callback
+     */
+    public void sendPostRequest(String url , RequestBody requestBody , Callback callback){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .cookieJar(new CookieJarImpl(new PersistentCookieStore(context)))
+                        .build();
+                Request request = new Request.Builder()
+                        .url(url)
+                        .post(requestBody)
                         .build();
                 client.newCall(request).enqueue(callback);
             }
@@ -153,6 +234,10 @@ public class HomeRepository {
         return homeBean;
     }
 
+    public ResponseBean getResponseBean() {
+        return responseBean;
+    }
+
     class InsertCacheData extends Thread{
         @Override
         public void run() {
@@ -160,14 +245,6 @@ public class HomeRepository {
             for (int i = 0 ; i < homeBean.getDatas().size() ; i++){
                 insertHome(homeBean.getDatas().get(i));
             }
-        }
-    }
-
-    class ClearCacheData extends Thread{
-        @Override
-        public void run() {
-            super.run();
-            deleteHome();
         }
     }
 
@@ -189,10 +266,10 @@ public class HomeRepository {
         }
     }
 
-    class DeleteHomeBean extends AsyncTask<HomeBean , Void , Void>{
+    class DeleteHomeBean extends AsyncTask<Void , Void , Void>{
 
         @Override
-        protected Void doInBackground(HomeBean... homeBeans) {
+        protected Void doInBackground(Void...voids) {
             homeDao.deleteHome();
             return null;
         }

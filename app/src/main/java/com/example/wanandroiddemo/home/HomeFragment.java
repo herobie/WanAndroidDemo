@@ -36,7 +36,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater , R.layout.fragment_home , container , false);
-        viewModel = new ViewModelProvider(this).get(HomeFragmentViewModel.class);
         return binding.getRoot();
     }
 
@@ -47,10 +46,11 @@ public class HomeFragment extends Fragment {
     }
 
     protected void initView(){
+        viewModel = new ViewModelProvider(this).get(HomeFragmentViewModel.class);
         binding.homeSwipeRefresh.setOnRefreshListener(() -> {
             viewModel.getRepository().refresh();//刷新，重新请求一遍
         });
-        homeItemAdapter = new HomeItemAdapter(getContext() , viewModel.getRepository().getHomeBean() , getViewLifecycleOwner());
+        homeItemAdapter = new HomeItemAdapter(getContext() , viewModel);
         viewModel.setHomeItemAdapter(homeItemAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.rvHome.setLayoutManager(layoutManager);

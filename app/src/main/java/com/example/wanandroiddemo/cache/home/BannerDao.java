@@ -1,4 +1,4 @@
-package com.example.wanandroiddemo.home.cache;
+package com.example.wanandroiddemo.cache.home;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

@@ -15,8 +15,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,12 +40,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainActivityViewModel mainActivityViewModel;
     private FragmentManager fragmentManager;
     private ActivityMainBinding binding;
+    private MainReceiver mainReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this , R.layout.activity_main);
         acquirePermissions();
         initView();
+        initReceiver();
     }
 
     protected void initView(){
@@ -76,6 +83,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return true;
         });
+//        mainActivityViewModel.autoLogin();
+    }
+
+    protected void initReceiver(){
+        mainReceiver = new MainReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("MainReceiver");
+        registerReceiver(mainReceiver , filter);
     }
 
     @Override
@@ -114,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    public void replaceFragment(Fragment fragment , boolean isAddToBackStack){
+    protected void replaceFragment(Fragment fragment , boolean isAddToBackStack){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragContainer , fragment);
         if (isAddToBackStack){//判断是否加入返回栈，一般是左侧滑动导航栏进入的页面需要
@@ -123,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
     }
 
-    public void acquirePermissions(){
+    protected void acquirePermissions(){
         if(ContextCompat.checkSelfPermission(this , Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE} , 1);
         }
@@ -145,5 +160,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
+    }
+
+    protected class MainReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String function = intent.getStringExtra("MainIntent");
+            Log.d(Constant.TAG , "BroadCastReceived!: " + function);
+            switch (function){
+                case "toLogin":
+                    replaceFragment(mainActivityViewModel.getBaseLoginFragment() , true);
+                    break;
+            }
+        }
     }
 }
