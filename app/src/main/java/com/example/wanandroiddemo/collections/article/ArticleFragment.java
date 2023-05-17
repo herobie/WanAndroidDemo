@@ -87,7 +87,6 @@ public class ArticleFragment extends Fragment {
                     if (viewModel.getRepository().getCollectedArticles().getData() != null){//没登录时不会有后面这部分数据
                         viewModel.getArticleAdapter()
                                 .setArticles(viewModel.getRepository().getCollectedArticles().getData().getDatas());
-                        Log.d(Constant.TAG , String.valueOf(viewModel.getArticleAdapter().getItemCount()));
                     }
                     conductorForAdapter.visible(false)
                             .adapter(viewModel.getArticleAdapter())

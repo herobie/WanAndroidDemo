@@ -8,7 +8,7 @@
     </style>
 
     <!--自定义dialog背景全透明无边框theme -->
-    <style name="DialogBaseStyle" parent="Theme.MaterialComponents.Dialog">
+    <style name="DialogBaseStyle" parent="android:style/Theme.Dialog">
         <!--背景颜色及和透明程度-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <!--去除标题 -->
