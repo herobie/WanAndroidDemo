@@ -1,6 +1,8 @@
 package com.example.wanandroiddemo.collections.website;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +21,11 @@ public class WebAdapter extends RecyclerView.Adapter<WebAdapter.ViewHolder> {
     private List<CollectedWebs.WebDatas> data;
     private ItemWebBinding binding;
     private WebsiteViewModel websiteViewModel;
+    private Context context;
 
-    public WebAdapter(WebsiteViewModel websiteViewModel) {
+    public WebAdapter(WebsiteViewModel websiteViewModel , Context context) {
         this.websiteViewModel = websiteViewModel;
+        this.context = context;
     }
 
     public void setDatas(List<CollectedWebs.WebDatas> data) {
@@ -54,6 +58,11 @@ public class WebAdapter extends RecyclerView.Adapter<WebAdapter.ViewHolder> {
                     .requestRemoveWeb(data.get(position).getId());
             data.remove(position);
             notifyDataSetChanged();
+        });
+        binding.itemWebView.setOnClickListener(v -> {
+            Intent intent = new Intent("skipToWebsite");
+            intent.putExtra("url" , websiteViewModel.getRepository().getWeb().getData().get(position).getLink());
+            context.sendBroadcast(intent);
         });
     }
 

@@ -1,5 +1,6 @@
 package com.example.wanandroiddemo.project;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
@@ -21,6 +22,8 @@ import com.example.wanandroiddemo.project.adapter.ProjectItemAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.lm.piccolo.Piccolo;
 import com.lm.piccolo.view.ConductorForAdapter;
+
+import java.util.Objects;
 
 public class ProjectFragment extends Fragment implements TabLayout.OnTabSelectedListener{
     private ProjectFragmentViewModel viewModel;
@@ -50,9 +53,10 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
         project_swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                viewModel.acquireData(viewModel.getLastPosition());
-                viewModel.getRepository().requestItemData(viewModel.getLastPosition().getValue());
-                project_swipe_refresh.setRefreshing(true);
+                if (Boolean.TRUE.equals(viewModel.getIsIDAcquired().getValue())){
+                    viewModel.getRepository().requestItemData(viewModel.getLastPosition().getValue());
+                    project_swipe_refresh.setRefreshing(true);
+                }
             }
         });
         project_rv = getView().findViewById(R.id.project_rv);
@@ -66,8 +70,8 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean){
-                    for (int i = 0 ; i < viewModel.getProjectIdList().size() ; i++){
-                        project_tab.addTab(project_tab.newTab().setText(viewModel.getProjectIdList().get(i).getName()));
+                    for (int i = 0 ; i < viewModel.getRepository().getIdBean().getData().size() ; i++){
+                        project_tab.addTab(project_tab.newTab().setText(viewModel.getRepository().getIdBean().getData().get(i).getName()));
                     }
                 }
             }
@@ -85,13 +89,36 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
                                 .adapter(projectItemAdapter)//结束加载后的Adapter
                                 .play();
                     }else {//获取id后调用这个
-                        projectItemAdapter.setChapters(viewModel.getChapterBean().getDatas());
+                        projectItemAdapter.setChapters(viewModel.getRepository().getChapterBean().getDatas());
                         conductorForAdapter.visible(false)
                                 .adapter(projectItemAdapter)
                                 .play();
                         if (project_swipe_refresh.isRefreshing()){
                             project_swipe_refresh.setRefreshing(false);
                         }
+                    }
+                }
+            }
+        });
+        viewModel.getIsFailed().observe(getViewLifecycleOwner(), new Observer<Boolean>() {//如果请求失败调用此方法，获取item对应的id
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    //找到和缓存页面相符合的tab并选中
+                    for (int i = 0 ; i < viewModel.getRepository().getIdBean().getData().size();i++){
+                        project_tab.addTab(project_tab.newTab().setText(viewModel.getRepository().getIdBean().getData().get(i).getName()));
+                        for (int j = 0 ; j < viewModel.getRepository().getChapterBean().getDatas().size() ; j++){
+                            if (viewModel.getRepository().getChapterBean().getDatas().get(j).getChapterId() == viewModel.getRepository().getIdBean().getData().get(i).getId()){
+                                Objects.requireNonNull(project_tab.getTabAt(i)).select();
+                                break;
+                            }
+                        }
+                    }
+                    projectItemAdapter.setChapters(viewModel.getRepository().getChapterBean().getDatas());
+                    project_rv.setAdapter(projectItemAdapter);
+                    if (project_swipe_refresh.isRefreshing()){
+                        project_swipe_refresh.setRefreshing(false);
                     }
                 }
             }
@@ -105,6 +132,9 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
 //        viewModel.acquireData(tab.getPosition());
         viewModel.getLastPosition().setValue(tab.getPosition());
         viewModel.getRepository().requestItemData(tab.getPosition());
+        if (project_swipe_refresh.isRefreshing()){
+            project_swipe_refresh.setRefreshing(false);
+        }
     }
 
     @Override

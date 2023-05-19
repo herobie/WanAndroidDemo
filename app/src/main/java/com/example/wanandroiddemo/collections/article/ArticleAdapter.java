@@ -1,6 +1,8 @@
 package com.example.wanandroiddemo.collections.article;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +21,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     private List<CollectedArticles.Data.CollectedData> articles;
     private ArticleViewModel viewModel;
     private ItemArticlesBinding binding;
+    private Context context;
 
     public ArticleAdapter(List<CollectedArticles.Data.CollectedData> articles , ArticleViewModel viewModel) {
         this.articles = articles;
         this.viewModel = viewModel;
     }
 
-    public ArticleAdapter(ArticleViewModel viewModel) {
+    public ArticleAdapter(ArticleViewModel viewModel , Context context) {
         this.viewModel = viewModel;
+        this.context = context;
     }
 
     public void setArticles(List<CollectedArticles.Data.CollectedData> articles) {
@@ -41,23 +45,24 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return holder;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         binding = DataBindingUtil.getBinding(holder.itemView);
         binding.setViewModel(viewModel);
         binding.setArticle(articles.get(position));
         //取消收藏
-        binding.artCollect.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onClick(View v) {
-                viewModel.getRepository().requestRemoveArticle(position);//请求取消收藏
-                viewModel.getRepository()
-                        .deleteArticle(articles.get(position).getId());//数据库删除缓存
-                articles.remove(position);//集合中移除
-                notifyDataSetChanged();
-//                viewModel.getRepository().requestCollectedArticle();
-            }
+        binding.artCollect.setOnClickListener(v -> {
+            viewModel.getRepository().requestRemoveArticle(position);//请求取消收藏
+            viewModel.getRepository()
+                    .deleteArticle(articles.get(position).getId());//数据库删除缓存
+            articles.remove(position);//集合中移除
+            notifyDataSetChanged();
+        });
+        binding.artView.setOnClickListener(v -> {
+            Intent intent = new Intent("skipToWebsite");
+            intent.putExtra("url" , viewModel.getRepository().getCollectedArticles().getData().getDatas().get(position).getLink());
+            context.sendBroadcast(intent);
         });
     }
 

@@ -10,7 +10,19 @@ public class CollectedWebs {
     private int errorCode;
     private String errorMsg;
     private List<WebDatas> data;
+    private static volatile CollectedWebs collectedWebs;
+    public static CollectedWebs getInstance(){
+        if (collectedWebs == null){
+            synchronized (CollectedWebs.class){
+                if (collectedWebs == null){
+                    collectedWebs = new CollectedWebs();
+                }
+            }
+        }
+        return collectedWebs;
+    }
 
+    private CollectedWebs(){}
     public int getErrorCode() {
         return errorCode;
     }

@@ -15,6 +15,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private HomeFragment homeFragment;
     private NavFragment navFragment;
     private BaseLoginFragment baseLoginFragment;
+    private WebFragment webFragment;
     private CollectionsBaseFragment collectionsBaseFragment;
     private MutableLiveData<Boolean> isLogin;
     private MainRepository mainRepository;
@@ -68,5 +69,14 @@ public class MainActivityViewModel extends AndroidViewModel {
             collectionsBaseFragment = new CollectionsBaseFragment();
         }
         return collectionsBaseFragment;
+    }
+
+    public WebFragment getWebFragment(String url) {
+        if (webFragment == null){
+            webFragment = new WebFragment(url);
+        }else {
+            webFragment.setUrl(url);
+        }
+        return webFragment;
     }
 }

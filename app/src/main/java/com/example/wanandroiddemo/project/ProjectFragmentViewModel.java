@@ -13,11 +13,7 @@ import java.util.List;
 
 public class ProjectFragmentViewModel extends AndroidViewModel {
     private final String idUrl , projectDataUrl;
-    private IDBean idBean;
-    private ChapterBean chapterBean;
-    private MutableLiveData<Boolean> isIDAcquired;
-    private MutableLiveData<Boolean> isItemParseFinished;
-    private List<IDBean.DataBean> projectIdList;
+    private MutableLiveData<Boolean> isItemParseFinished , isIDAcquired , isFailed;
     private MutableLiveData<Integer> lastPosition;
     private final ProjectRepository repository;
 
@@ -28,21 +24,10 @@ public class ProjectFragmentViewModel extends AndroidViewModel {
         repository = new ProjectRepository(application , this);
         isIDAcquired = new MutableLiveData<>();
         isItemParseFinished = new MutableLiveData<>();
+        isFailed = new MutableLiveData<>();
+        isFailed.setValue(false);
         lastPosition = new MutableLiveData<>();
         lastPosition.setValue(0);
-        projectIdList = new ArrayList<>();
-    }
-
-    public void setChapterBean(ChapterBean chapterBean) {
-        this.chapterBean = chapterBean;
-    }
-
-    public void setIdBean(IDBean idBean) {
-        this.idBean = idBean;
-    }
-
-    public ChapterBean getChapterBean() {
-        return chapterBean;
     }
 
     public MutableLiveData<Boolean> getIsIDAcquired() {
@@ -53,16 +38,12 @@ public class ProjectFragmentViewModel extends AndroidViewModel {
         return isItemParseFinished;
     }
 
+    public MutableLiveData<Boolean> getIsFailed() {
+        return isFailed;
+    }
+
     public MutableLiveData<Integer> getLastPosition() {
         return lastPosition;
-    }
-
-    public List<IDBean.DataBean> getProjectIdList() {
-        return projectIdList;
-    }
-
-    public void setProjectIdList(List<IDBean.DataBean> projectIdList) {
-        this.projectIdList = projectIdList;
     }
 
     public ProjectRepository getRepository() {

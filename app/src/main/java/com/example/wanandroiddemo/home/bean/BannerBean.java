@@ -26,8 +26,12 @@ public class BannerBean {
         return data;
     }
 
+    public void setData(List<Data> data) {
+        this.data = data;
+    }
+
     @Entity
-    public class Data{
+    public static class Data{
         @ColumnInfo
         private String desc , imagePath , url , title;
         @ColumnInfo

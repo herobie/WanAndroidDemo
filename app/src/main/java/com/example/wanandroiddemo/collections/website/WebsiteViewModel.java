@@ -36,7 +36,7 @@ public class WebsiteViewModel extends AndroidViewModel {
 
     public WebAdapter getWebAdapter() {
         if (webAdapter == null){
-            webAdapter = new WebAdapter(this);
+            webAdapter = new WebAdapter(this , getApplication());
         }
         return webAdapter;
     }

@@ -1,6 +1,7 @@
 package com.example.wanandroiddemo.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,14 @@ public class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.ViewHo
                         viewModel.getRepository().requestCollect(homeBean.getDatas().get(finalPosition).getId());
                         binding.itemStar.setImageResource(R.drawable.ic_baseline_star_24_yellow);
                     }
+                }
+            });
+            binding.itemHomeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("skipToWebsite");
+                    intent.putExtra("url" , homeBean.getDatas().get(finalPosition).getLink());
+                    context.sendBroadcast(intent);
                 }
             });
         }else if (position == 0){

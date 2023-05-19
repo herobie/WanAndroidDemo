@@ -15,7 +15,7 @@ public class ResponseBean {
         }
         return responseBean;
     }
-    public ResponseBean() {
+    private ResponseBean() {
     }
 
     public String getData() {

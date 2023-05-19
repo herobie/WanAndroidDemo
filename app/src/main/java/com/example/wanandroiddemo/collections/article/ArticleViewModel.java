@@ -33,7 +33,7 @@ public class ArticleViewModel extends AndroidViewModel {
 
     public ArticleAdapter getArticleAdapter() {
         if (articleAdapter == null){
-            articleAdapter = new ArticleAdapter(this);
+            articleAdapter = new ArticleAdapter(this , getApplication());
         }
         return articleAdapter;
     }

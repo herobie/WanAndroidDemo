@@ -2,6 +2,7 @@ package com.example.wanandroiddemo.project.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class ProjectItemAdapter extends RecyclerView.Adapter<ProjectItemAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         binding = DataBindingUtil.getBinding(holder.itemView);
         binding.setProjectViewModel(viewModel);
-        binding.setChapterData(viewModel.getChapterBean().getDatas().get(position));
+        binding.setChapterData(viewModel.getRepository().getChapterBean().getDatas().get(position));
         Glide.with(context).load(chapters.get(position).getEnvelopePic())
                 .placeholder(R.drawable.ic_baseline_photo_24)
                 .error(R.drawable.ic_baseline_photo_24)
@@ -57,6 +58,9 @@ public class ProjectItemAdapter extends RecyclerView.Adapter<ProjectItemAdapter.
         binding.projectView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent("skipToWebsite");
+                intent.putExtra("url" , viewModel.getRepository().getChapterBean().getDatas().get(position).getLink());
+                context.sendBroadcast(intent);
             }
         });
         binding.projectStar.setOnClickListener(new View.OnClickListener() {

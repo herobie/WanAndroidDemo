@@ -9,7 +9,7 @@ import java.util.List;
 
 public class HomeBean {
     private static volatile HomeBean homeBean;
-    public HomeBean(){}
+    private HomeBean(){}
     public static HomeBean getInstance(){
         if (homeBean == null){
             synchronized (HomeBean.class){
@@ -25,12 +25,16 @@ public class HomeBean {
 
     private int curPage;
 
+    public void setDatas(List<HomeData> datas) {
+        this.datas = datas;
+    }
+
     public List<HomeData> getDatas() {
         return datas;
     }
 
     @Entity
-    public class HomeData{
+    public static class HomeData{
         @PrimaryKey(autoGenerate = true)
         private int homeId;
         @ColumnInfo

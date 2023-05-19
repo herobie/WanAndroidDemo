@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -72,7 +73,6 @@ public class HomeRepository {
      * 请求主页面的数据,先获取item数据，获取成功后再获取banner,最后将这些加入room缓存
      */
     public void refresh(){
-        deleteHome();//先清空所有缓存
         isLoadingSuccess.setValue(false);//将是否加载完毕设置为否
         Callback bannerCallback = new Callback() {//banner的
             @Override
@@ -82,6 +82,7 @@ public class HomeRepository {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                clearBanner();
                 parseBannerData(response.body().string());
                 Message message = new Message();
                 message.what = PHRASE_SUCCEED;
@@ -91,11 +92,14 @@ public class HomeRepository {
         sendRequest(homeUrl, new Callback() {//请求item的数据
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+                //失败后直接加载缓存
+                queryAll();
+                queryAllBanner();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                deleteHome();//先清空所有缓存
                 sendRequest(bannerUrl , bannerCallback);//在主页面数据成功获得后请求banner数据
                 parseItemData(response.body().string());
             }
@@ -172,6 +176,7 @@ public class HomeRepository {
     protected void parseBannerData(String responseData){
         Gson gson = new Gson();
         bannerBean = gson.fromJson(responseData , BannerBean.class);
+        insertBanner(bannerBean.getData().toArray(new BannerBean.Data[0]));
     }
 
     //发送请求
@@ -218,6 +223,18 @@ public class HomeRepository {
         new InsertBannerBean().execute(data);
     }
 
+    protected void clearBanner(){
+        new DeleteBanner().execute();
+    }
+
+    protected void queryAll(){
+        new QueryAll().execute();
+    }
+
+    protected void queryAllBanner(){
+        new QueryAllBanner().execute();
+    }
+
     public void deleteHome(){
         new DeleteHomeBean().execute();
     }
@@ -238,7 +255,7 @@ public class HomeRepository {
         return responseBean;
     }
 
-    class InsertCacheData extends Thread{
+    private class InsertCacheData extends Thread{
         @Override
         public void run() {
             super.run();
@@ -248,7 +265,7 @@ public class HomeRepository {
         }
     }
 
-    class InsertHomeBean extends AsyncTask<HomeBean.HomeData , Void , Void>{
+    private class InsertHomeBean extends AsyncTask<HomeBean.HomeData , Void , Void>{
 
         @Override
         protected Void doInBackground(HomeBean.HomeData... homeData) {
@@ -257,7 +274,7 @@ public class HomeRepository {
         }
     }
 
-    class InsertBannerBean extends AsyncTask<BannerBean.Data , Void , Void>{
+    private class InsertBannerBean extends AsyncTask<BannerBean.Data , Void , Void>{
 
         @Override
         protected Void doInBackground(BannerBean.Data... data) {
@@ -266,7 +283,7 @@ public class HomeRepository {
         }
     }
 
-    class DeleteHomeBean extends AsyncTask<Void , Void , Void>{
+    private class DeleteHomeBean extends AsyncTask<Void , Void , Void>{
 
         @Override
         protected Void doInBackground(Void...voids) {
@@ -275,5 +292,43 @@ public class HomeRepository {
         }
     }
 
+    private class DeleteBanner extends AsyncTask<Void , Void , Void>{
 
+        @Override
+        protected Void doInBackground(Void... voids) {
+            bannerDao.clearBanner();
+            return null;
+        }
+    }
+
+    private class QueryAll extends AsyncTask<Void , Void , List<HomeBean.HomeData>>{
+
+        @Override
+        protected List<HomeBean.HomeData> doInBackground(Void... voids) {
+            return homeDao.queryAll();
+        }
+
+        @Override
+        protected void onPostExecute(List<HomeBean.HomeData> homeData) {
+            super.onPostExecute(homeData);
+            homeBean = HomeBean.getInstance();
+            homeBean.setDatas(homeData);
+        }
+    }
+
+    private class QueryAllBanner extends AsyncTask<Void , Void , List<BannerBean.Data>>{
+
+        @Override
+        protected List<BannerBean.Data> doInBackground(Void... voids) {
+            return bannerDao.queryAllBanner();
+        }
+
+        @Override
+        protected void onPostExecute(List<BannerBean.Data> data) {
+            super.onPostExecute(data);
+            bannerBean = BannerBean.getInstance();
+            bannerBean.setData(data);
+            isLoadingSuccess.postValue(true);
+        }
+    }
 }

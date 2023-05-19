@@ -7,6 +7,8 @@ import androidx.room.Query;
 
 import com.example.wanandroiddemo.collections.bean.CollectedArticles;
 
+import java.util.List;
+
 @Dao
 public interface ArticleDao {
     @Insert
@@ -20,4 +22,7 @@ public interface ArticleDao {
 
     @Query("SELECT EXISTS(SELECT link FROM CollectedData WHERE link=:link)")
     boolean querySameLink(String link);
+
+    @Query("SELECT * FROM CollectedData")
+    List<CollectedArticles.Data.CollectedData> queryAll();
 }

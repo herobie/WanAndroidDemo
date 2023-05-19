@@ -27,8 +27,12 @@ public class ChapterBean {
         return datas;
     }
 
+    public void setDatas(List<ProjectData> datas) {
+        this.datas = datas;
+    }
+
     @Entity
-    public class ProjectData{
+    public static class ProjectData{
         @ColumnInfo
         private String chapterName , desc , envelopePic , link , niceDate , niceShareDate , author , projectLink , title , shareUser;
         @ColumnInfo

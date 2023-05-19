@@ -15,7 +15,7 @@ public class CollectedArticles {
     private Data data;
     private static volatile CollectedArticles collectedArticles;
 
-    public CollectedArticles(){
+    private CollectedArticles(){
     }
 
     public static CollectedArticles getInstance(){
@@ -33,14 +33,25 @@ public class CollectedArticles {
         return data;
     }
 
-    public class Data{
+    public void setNewData(){
+        if (data == null){
+            data = new Data();
+        }
+    }
+
+    public static class Data{
         private List<CollectedData> datas;
 
         public List<CollectedData> getDatas() {
             return datas;
         }
+
+        public void setDatas(List<CollectedData> datas) {
+            this.datas = datas;
+        }
+
         @Entity
-        public class CollectedData{
+        public static class CollectedData{
             @ColumnInfo
             private String title;
             @ColumnInfo

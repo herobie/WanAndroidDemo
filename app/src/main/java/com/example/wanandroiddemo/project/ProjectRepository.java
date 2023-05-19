@@ -1,6 +1,7 @@
 package com.example.wanandroiddemo.project;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,6 @@ public class ProjectRepository {
     private IDBean idBean;
     private ResponseBean responseBean;
     private ChapterBean chapterBean;
-    private List<IDBean.DataBean> projectIdList;
     private final String tagsUrl = "https://www.wanandroid.com/project/tree/json";
     private final String projectDataUrl = "https://www.wanandroid.com/project/list/1/json";
     private final String uncollectUrl = "https://www.wanandroid.com/lg/uncollect_originId/";//id拼接上去
@@ -54,7 +54,6 @@ public class ProjectRepository {
         idDao = cache.getIDDao();
         chapterDao = cache.getChapterDao();
         articleDao = cache.getArticleDao();
-        projectIdList = new ArrayList<>();
     }
 
     /**
@@ -103,16 +102,20 @@ public class ProjectRepository {
      * 请求tag数据
      */
     public void requestID(){
+        viewModel.getIsFailed().setValue(false);
         viewModel.getIsIDAcquired().postValue(false);
         sendRequest(tagsUrl, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+                queryAllId();
+                queryAllChapter();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                clearId();
                 parseId(response.body().string());
+                insertId(idBean.getData().toArray(new IDBean.DataBean[0]));//加入缓存
                 requestItemData(viewModel.getLastPosition().getValue());//获取tag后自动请求当前tag的页面数据
                 viewModel.getIsIDAcquired().postValue(true);//通知id加载完毕刷新UI
             }
@@ -173,10 +176,6 @@ public class ProjectRepository {
     protected void parseId(String responseData){
         Gson gson = new Gson();
         idBean = gson.fromJson(responseData , IDBean.class);
-        projectIdList = idBean.getData();
-        //将解析完毕的tag数据返回给viewModel
-        viewModel.setIdBean(idBean);
-        viewModel.setProjectIdList(projectIdList);
     }
 
     /**
@@ -187,19 +186,21 @@ public class ProjectRepository {
         viewModel.getIsItemParseFinished().postValue(false);
         String url = projectDataUrl
                 + "?cid="
-                + String.valueOf(getProjectIdList().get(position).getId());
+                + String.valueOf(getIdBean().getData().get(position).getId());
         sendRequest(url, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+                queryAllChapter();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //判断当前等待解析的数据是否与按钮描述一致,如果是，才能显示
                 if (position == viewModel.getLastPosition().getValue()){
+                    clearChapter();
                     parseProjectData(response.body().string());
                     viewModel.getIsItemParseFinished().postValue(true);
+                    insertChapter(chapterBean.getDatas().toArray(new ChapterBean.ProjectData[0]));
                 }
             }
         });
@@ -217,15 +218,33 @@ public class ProjectRepository {
             String content = data.toString();
             Gson gson = new Gson();
             chapterBean = gson.fromJson(content , ChapterBean.class);
-            //给viewModel设置页面数据
-            viewModel.setChapterBean(chapterBean);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public List<IDBean.DataBean> getProjectIdList() {
-        return projectIdList;
+    private void insertId(IDBean.DataBean... dataBeans){
+        new InsertId().execute(dataBeans);
+    }
+
+    private void clearId(){
+        new ClearId().execute();
+    }
+
+    private void queryAllId(){
+        new QueryAllId().execute();
+    }
+
+    private void insertChapter(ChapterBean.ProjectData... projectData){
+        new InsertChapter().execute(projectData);
+    }
+
+    private void clearChapter(){
+        new ClearChapter().execute();
+    }
+
+    private void queryAllChapter(){
+        new QueryAllChapter().execute();
     }
 
     public IDBean getIdBean() {
@@ -234,5 +253,72 @@ public class ProjectRepository {
 
     public ChapterBean getChapterBean() {
         return chapterBean;
+    }
+
+    private class InsertId extends AsyncTask<IDBean.DataBean , Void , Void>{
+
+        @Override
+        protected Void doInBackground(IDBean.DataBean... dataBeans) {
+            idDao.insertId(dataBeans);
+            return null;
+        }
+    }
+
+    private class ClearId extends AsyncTask<Void , Void , Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            idDao.clearId();
+            return null;
+        }
+    }
+
+    private class QueryAllId extends AsyncTask<Void , Void , List<IDBean.DataBean>>{
+
+        @Override
+        protected List<IDBean.DataBean> doInBackground(Void... voids) {
+            return idDao.queryAllId();
+        }
+
+        @Override
+        protected void onPostExecute(List<IDBean.DataBean> dataBeans) {
+            super.onPostExecute(dataBeans);
+            idBean = IDBean.getInstance();
+            idBean.setData(dataBeans);
+        }
+    }
+
+    private class InsertChapter extends AsyncTask<ChapterBean.ProjectData , Void , Void>{
+
+        @Override
+        protected Void doInBackground(ChapterBean.ProjectData... projectData) {
+            chapterDao.insertChapter(projectData);
+            return null;
+        }
+    }
+
+    private class ClearChapter extends AsyncTask<Void , Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            chapterDao.clearChapter();
+            return null;
+        }
+    }
+
+    private class QueryAllChapter extends AsyncTask<Void , Void , List<ChapterBean.ProjectData>>{
+
+        @Override
+        protected List<ChapterBean.ProjectData> doInBackground(Void... voids) {
+            return chapterDao.queryAllChapter();
+        }
+
+        @Override
+        protected void onPostExecute(List<ChapterBean.ProjectData> projectData) {
+            super.onPostExecute(projectData);
+            chapterBean = ChapterBean.getInstance();
+            chapterBean.setDatas(projectData);
+            viewModel.getIsFailed().postValue(true);
+        }
     }
 }

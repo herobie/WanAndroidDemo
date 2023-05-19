@@ -17,6 +17,7 @@ import com.example.wanandroiddemo.cookieStore.PersistentCookieStore;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -57,12 +58,15 @@ public class ArticleRepository {
         }).start();
     }
 
+    /**
+     * 获取收藏文章信息
+     */
     public void requestCollectedArticle(){
         viewModel.getIsSuccess().setValue(false);
         sendRequest(requestArticleUrl, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+                queryAll();
             }
 
             @Override
@@ -196,6 +200,10 @@ public class ArticleRepository {
         new QueryExistLink(title, author, link).execute();
     }
 
+    protected void queryAll(){
+        new QueryAll().execute();
+    }
+
     /**
      * 删除指定文章
      * @param id 文章id
@@ -259,10 +267,27 @@ public class ArticleRepository {
             if (!aBoolean){
                 requestNewArticle(title , author , link);
             }else {
-                Intent intent = new Intent("ArticleDialog");//表面文章已经存在
+                Intent intent = new Intent("ArticleDialog");//表明文章已经存在
                 context.sendBroadcast(intent);
             }
 
+        }
+    }
+
+    protected class QueryAll extends AsyncTask<Void , Void , List<CollectedArticles.Data.CollectedData>>{
+
+        @Override
+        protected List<CollectedArticles.Data.CollectedData> doInBackground(Void... voids) {
+            return articleDao.queryAll();
+        }
+
+        @Override
+        protected void onPostExecute(List<CollectedArticles.Data.CollectedData> data) {
+            super.onPostExecute(data);
+            collectedArticles = CollectedArticles.getInstance();
+            collectedArticles.setNewData();
+            collectedArticles.getData().setDatas(data);
+            viewModel.getIsSuccess().postValue(true);
         }
     }
 }

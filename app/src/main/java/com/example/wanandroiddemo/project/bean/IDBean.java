@@ -25,8 +25,12 @@ public class IDBean {
         return data;
     }
 
+    public void setData(List<DataBean> data) {
+        this.data = data;
+    }
+
     @Entity
-    public class DataBean{
+    public static class DataBean{
         @ColumnInfo
         private String name;
         @PrimaryKey

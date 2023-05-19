@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentManager fragmentManager;
     private ActivityMainBinding binding;
     private MainReceiver mainReceiver;
+    private SkipToWebsite skipToWebsite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +92,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         IntentFilter filter = new IntentFilter();
         filter.addAction("MainReceiver");
         registerReceiver(mainReceiver , filter);
+        skipToWebsite = new SkipToWebsite();
+        IntentFilter filter1 = new IntentFilter();
+        filter1.addAction("skipToWebsite");
+        registerReceiver(skipToWebsite , filter1);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mainReceiver);
+        unregisterReceiver(skipToWebsite);
     }
 
     @Override
@@ -167,12 +179,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onReceive(Context context, Intent intent) {
             String function = intent.getStringExtra("MainIntent");
-            Log.d(Constant.TAG , "BroadCastReceived!: " + function);
             switch (function){
                 case "toLogin":
                     replaceFragment(mainActivityViewModel.getBaseLoginFragment() , true);
                     break;
             }
+        }
+    }
+
+    protected class SkipToWebsite extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String url = intent.getStringExtra("url");
+            replaceFragment(mainActivityViewModel.getWebFragment(url) , true);
         }
     }
 }

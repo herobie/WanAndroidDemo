@@ -85,10 +85,12 @@ public class WebRepository {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                clearWeb();//先清除缓存
                 parseCollectedData(response.body().string());
-                viewModel.getIsWebAcquired().postValue(true);
-                insertWeb(getWeb().getData().toArray(new CollectedWebs.WebDatas[0]));//再重新刷新缓存
+                if (web.getErrorCode() != -1001){
+                    clearWeb();//先清除缓存
+                    viewModel.getIsWebAcquired().postValue(true);
+                    insertWeb(getWeb().getData().toArray(new CollectedWebs.WebDatas[0]));//再重新刷新缓存
+                }
             }
         });
     }
@@ -212,7 +214,7 @@ public class WebRepository {
         @Override
         protected void onPostExecute(List<CollectedWebs.WebDatas> webDatas) {
             super.onPostExecute(webDatas);
-            web = new CollectedWebs();
+            web = CollectedWebs.getInstance();
             web.setData(webDatas);
             viewModel.getIsWebAcquired().postValue(true);
         }
