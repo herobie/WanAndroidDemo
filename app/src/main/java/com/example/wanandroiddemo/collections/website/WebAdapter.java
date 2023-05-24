@@ -3,6 +3,7 @@ package com.example.wanandroiddemo.collections.website;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.collections.bean.CollectedWebs;
 import com.example.wanandroiddemo.databinding.ItemWebBinding;
@@ -40,17 +42,19 @@ public class WebAdapter extends RecyclerView.Adapter<WebAdapter.ViewHolder> {
         return holder;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         binding = DataBindingUtil.getBinding(holder.itemView);
         binding.setData(data.get(position));
-        binding.itemWebView.setOnLongClickListener(v -> {
-            binding.itemWebDelete.setVisibility(View.VISIBLE);//长按显示删除键
+        binding.itemWebView.setOnLongClickListener(v -> {//长按切换删除按钮显示状态
+            if (binding.itemWebDelete.getVisibility() == View.VISIBLE){
+                binding.itemWebDelete.setVisibility(View.GONE);
+                Log.d(Constant.TAG, String.valueOf(position));
+            }else {
+                binding.itemWebDelete.setVisibility(View.VISIBLE);
+            }
             return true;
-        });
-        //点击跳转
-        binding.itemWebView.setOnClickListener(v -> {
-
         });
         //删除网址
         binding.itemWebDelete.setOnClickListener(v -> {
@@ -58,7 +62,9 @@ public class WebAdapter extends RecyclerView.Adapter<WebAdapter.ViewHolder> {
                     .requestRemoveWeb(data.get(position).getId());
             data.remove(position);
             notifyDataSetChanged();
+            binding.itemWebDelete.setVisibility(View.GONE);
         });
+        //点击跳转
         binding.itemWebView.setOnClickListener(v -> {
             Intent intent = new Intent("skipToWebsite");
             intent.putExtra("url" , websiteViewModel.getRepository().getWeb().getData().get(position).getLink());

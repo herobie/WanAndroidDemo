@@ -2,9 +2,11 @@ package com.example.wanandroiddemo.collections.website;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.cache.Cache;
 import com.example.wanandroiddemo.cache.collections.WebDao;
 import com.example.wanandroiddemo.collections.bean.CollectedWebs;
@@ -12,6 +14,9 @@ import com.example.wanandroiddemo.collections.bean.ResponseBean;
 import com.example.wanandroiddemo.cookieStore.CookieJarImpl;
 import com.example.wanandroiddemo.cookieStore.PersistentCookieStore;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -123,6 +128,7 @@ public class WebRepository {
      * @param link
      */
     public void requestNewWeb(String name , String link){
+        viewModel.getIsAdded().postValue(false);
         RequestBody requestBody = new FormBody.Builder()
                 .add("name" , name)
                 .add("link" , link)
@@ -135,9 +141,16 @@ public class WebRepository {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Gson gson = new Gson();
-                CollectedWebs.WebDatas data = gson.fromJson(response.body().string() , CollectedWebs.WebDatas.class);
-                web.getData().add(data);
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    String dataValue = jsonObject.getString("data");
+                    Gson gson = new Gson();
+                    CollectedWebs.WebDatas data = gson.fromJson(dataValue, CollectedWebs.WebDatas.class);
+                    web.getData().add(data);
+                    viewModel.getIsAdded().postValue(true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

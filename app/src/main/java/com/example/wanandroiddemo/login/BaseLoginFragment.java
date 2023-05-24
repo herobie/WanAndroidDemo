@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.MainActivityViewModel;
 import com.example.wanandroiddemo.R;
 
@@ -29,6 +30,13 @@ public class BaseLoginFragment extends Fragment {
     private BaseViewModel viewModel;
     private BaseReceiver baseReceiver;
     private IntentFilter intentFilter;
+    public static BaseLoginFragment getInstance(String param){
+        BaseLoginFragment baseLoginFragment = new BaseLoginFragment();
+        Bundle args = new Bundle();
+        args.putString(Constant.ARG_PARAM1, param);
+        baseLoginFragment.setArguments(args);
+        return baseLoginFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

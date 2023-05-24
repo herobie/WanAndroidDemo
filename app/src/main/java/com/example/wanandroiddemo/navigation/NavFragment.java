@@ -12,9 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.databinding.FragmentNavBinding;
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -23,6 +23,14 @@ import java.util.List;
 public class NavFragment extends Fragment {
     private FragmentNavBinding binding;
     private NavViewModel viewModel;
+
+    public static NavFragment getInstance(String param){
+        NavFragment navFragment = new NavFragment();
+        Bundle args = new Bundle();
+        args.putString(Constant.ARG_PARAM1, param);
+        navFragment.setArguments(args);
+        return navFragment;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +38,7 @@ public class NavFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater , R.layout.fragment_nav, container, false);
         return binding.getRoot();
@@ -45,14 +53,11 @@ public class NavFragment extends Fragment {
         fragmentList.add(viewModel.getNavigationFragment());
         NavAdapter navAdapter = new NavAdapter(getActivity() , fragmentList);
         binding.navViewPager.setAdapter(navAdapter);
-        new TabLayoutMediator(binding.navTab, binding.navViewPager, new TabLayoutMediator.TabConfigurationStrategy() {
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                if (position == 0){
-                    tab.setText("导航");
-                }else {
-                    tab.setText("体系");
-                }
+        new TabLayoutMediator(binding.navTab, binding.navViewPager, (tab, position) -> {
+            if (position == 0){
+                tab.setText("导航");
+            }else {
+                tab.setText("体系");
             }
         }).attach();
     }

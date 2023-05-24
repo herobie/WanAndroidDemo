@@ -10,13 +10,12 @@ import androidx.lifecycle.MutableLiveData;
 public class WebsiteViewModel extends AndroidViewModel {
     private WebRepository repository;
     private MutableLiveData<Boolean> isWebAcquired;
+    private MutableLiveData<Boolean> isAdded;
     private NewWebDialog dialog;
     private WebAdapter webAdapter;
     public WebsiteViewModel(@NonNull Application application) {
         super(application);
         repository = new WebRepository(application , this);
-        isWebAcquired = new MutableLiveData<>();
-        isWebAcquired.setValue(false);
     }
 
     public WebRepository getRepository() {
@@ -24,7 +23,19 @@ public class WebsiteViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<Boolean> getIsWebAcquired() {
+        if(isWebAcquired == null){
+            isWebAcquired = new MutableLiveData<>();
+            isWebAcquired.setValue(false);
+        }
         return isWebAcquired;
+    }
+
+    public MutableLiveData<Boolean> getIsAdded() {
+        if (isAdded == null){
+            isAdded = new MutableLiveData<>();
+            isAdded.setValue(false);
+        }
+        return isAdded;
     }
 
     public NewWebDialog getDialog(Context context) {

@@ -30,6 +30,7 @@
         android:text="未登录"
         android:textColor="@color/white"
         android:textSize="23sp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="168dp" />
 
     <TextView
@@ -41,6 +42,7 @@
         android:text="0 关注  | 0 粉丝"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="invisible"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="168dp" />
 </LinearLayout>

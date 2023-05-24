@@ -14,10 +14,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class WebFragment extends Fragment {
-    private WebView webView;
     private String url;
     public WebFragment(String url){
         this.url = url;
+    }
+
+    public static WebFragment getInstance(String url , String param){
+        WebFragment webFragment = new WebFragment(url);
+        Bundle args = new Bundle();
+        args.putString(Constant.ARG_PARAM1, param);
+        webFragment.setArguments(args);
+        return webFragment;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +42,7 @@ public class WebFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        webView = view.findViewById(R.id.webView);
+        WebView webView = view.findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);

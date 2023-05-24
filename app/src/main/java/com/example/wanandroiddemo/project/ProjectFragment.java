@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.project.adapter.ProjectItemAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -32,6 +33,14 @@ public class ProjectFragment extends Fragment implements TabLayout.OnTabSelected
     private RecyclerView project_rv;
     private SwipeRefreshLayout project_swipe_refresh;
     private ProjectItemAdapter projectItemAdapter;
+    public static ProjectFragment getInstance(String param){
+        ProjectFragment projectFragment = new ProjectFragment();
+        Bundle args = new Bundle();
+        args.putString(Constant.ARG_PARAM1, param);
+        projectFragment.setArguments(args);
+        return projectFragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -4,4 +4,8 @@
     <item android:id="@+id/login"
         android:title="登录"
         android:icon="@drawable/ic_baseline_login_24" />
+
+    <item android:id="@+id/logout"
+        android:title="登出"
+        android:icon="@drawable/ic_baseline_logout_24" />
 </menu>

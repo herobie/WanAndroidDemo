@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.wanandroiddemo.Constant;
 import com.example.wanandroiddemo.R;
 import com.example.wanandroiddemo.databinding.FragmentHomeBinding;
 import com.example.wanandroiddemo.home.adapter.HomeItemAdapter;
@@ -24,6 +25,14 @@ public class HomeFragment extends Fragment {
     private HomeItemAdapter homeItemAdapter;
     private FragmentHomeBinding binding;
     public HomeFragment() {
+    }
+
+    public static HomeFragment getInstance(String param1){
+        HomeFragment homeFragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString(Constant.ARG_PARAM1, param1);
+        homeFragment.setArguments(args);
+        return homeFragment;
     }
 
     @Override

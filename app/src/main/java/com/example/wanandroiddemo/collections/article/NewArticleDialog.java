@@ -48,13 +48,7 @@ public class NewArticleDialog extends Dialog implements View.OnClickListener{
                 dismiss();
                 break;
             case R.id.add_confirm:
-                if (inputCheck()){//如果通过则清空数据
-                    binding.addWarning.setText("");
-                    binding.addTitle.setText("");
-                    binding.addLink.setText("");
-                    binding.addAuthor.setText("");
-                    dismiss();
-                }
+                inputCheck();
                 break;
         }
     }
@@ -63,22 +57,19 @@ public class NewArticleDialog extends Dialog implements View.OnClickListener{
      * 检查输入内容是否完整
      * @return
      */
-    protected boolean inputCheck(){
-        boolean isPass = false;
+    protected void inputCheck(){
         String title = binding.addTitle.getText().toString();
         String link = binding.addLink.getText().toString();
         if (!title.isEmpty()){
             if (!link.isEmpty()){
-                isPass = true;
                 String author = binding.addAuthor.getText().toString();
-                viewModel.getRepository().queryLink(title , author , link);
+                viewModel.getRepository().requestNewArticle(title, author, link);
             }else {
                 binding.addWarning.setText("请输入链接!");
             }
         }else {
             binding.addWarning.setText("请输入标题!");
         }
-        return isPass;
     }
 
     protected class ArticleDialogReceiver extends BroadcastReceiver{

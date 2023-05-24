@@ -16,6 +16,9 @@ import com.example.wanandroiddemo.cookieStore.CookieJarImpl;
 import com.example.wanandroiddemo.cookieStore.PersistentCookieStore;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -137,13 +140,7 @@ public class ArticleRepository {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.d(Constant.TAG , response.body().string());
-                viewModel.getRepository()
-                        .getCollectedArticles()
-                        .getData()
-                        .getDatas()
-                        .add(collectedData);//将添加的文章加入集合
-                viewModel.getIsAdded().postValue(true);
+                parseCollectData(response.body().string());
             }
         };
         new Thread(new Runnable() {
@@ -167,8 +164,26 @@ public class ArticleRepository {
      * @return 新的文章数据
      */
     protected void parseCollectData(String responseData){
-        Gson gson = new Gson();
-        collectedData = gson.fromJson(responseData , CollectedArticles.Data.CollectedData.class);
+        try {
+            JSONObject jsonObject = new JSONObject(responseData);
+            int errorCode = jsonObject.getInt("errorCode");
+            if (errorCode != -1){//检查错误代码
+                String data = jsonObject.getString("data");
+                Gson gson = new Gson();
+                collectedData = gson.fromJson(data , CollectedArticles.Data.CollectedData.class);
+                viewModel.getRepository()
+                        .getCollectedArticles()
+                        .getData()
+                        .getDatas()
+                        .add(collectedData);//将添加的文章加入集合
+                viewModel.getIsAdded().postValue(true);
+            }else {
+                Intent intent = new Intent("ArticleDialog");//表明文章已经存在
+                context.sendBroadcast(intent);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void parseArticleData(String responseData){
@@ -194,10 +209,6 @@ public class ArticleRepository {
 
     protected void clearArticle(){
         new ClearAllArticle().execute();
-    }
-
-    protected void queryLink(String title , String author , String link){
-        new QueryExistLink(title, author, link).execute();
     }
 
     protected void queryAll(){
@@ -242,35 +253,6 @@ public class ArticleRepository {
         protected Void doInBackground(Void... voids) {
             articleDao.deleteArticle(id);
             return null;
-        }
-    }
-
-    /**
-     * 查询链接是否存在
-     */
-    protected class QueryExistLink extends AsyncTask<Void , Void , Boolean>{
-        private String link , author , title;
-        public QueryExistLink(String title , String author , String link){
-            this.link = link;
-            this.author = author;
-            this.title = title;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return articleDao.querySameLink(link);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (!aBoolean){
-                requestNewArticle(title , author , link);
-            }else {
-                Intent intent = new Intent("ArticleDialog");//表明文章已经存在
-                context.sendBroadcast(intent);
-            }
-
         }
     }
 

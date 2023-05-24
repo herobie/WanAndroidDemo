@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,22 +20,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.SearchView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wanandroiddemo.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Toolbar toolbar;
-    private FragmentContainerView fragContainer;
-    private LinearLayout navigation_background;
-    private TextView navigation_username , navigation_brief;
     private MainActivityViewModel mainActivityViewModel;
     private FragmentManager fragmentManager;
     private ActivityMainBinding binding;
@@ -63,9 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         binding.sideNavigation.setNavigationItemSelectedListener(this);
         View headerLayout = binding.sideNavigation.inflateHeaderView(R.layout.navigation_header);
-        navigation_username = headerLayout.findViewById(R.id.navigation_username);
-        navigation_brief = headerLayout.findViewById(R.id.navigation_brief);
-        navigation_background = headerLayout.findViewById(R.id.navigation_background);
         fragmentManager = getSupportFragmentManager();
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
@@ -108,15 +98,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar , menu);
-        initSearch(menu);
+//        initSearch(menu);
         return true;
     }
 
     @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-            case R.id.menu_search_view:
-                break;
             case android.R.id.home:
                 binding.mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
@@ -124,30 +112,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    protected void initSearch(Menu menu) {
-        SearchView searchView;
-        MenuItem searchItem = menu.findItem(R.id.menu_search_view);
-        searchView = (SearchView) searchItem.getActionView();
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return true;
-            }
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return true;
-            }
-        });
-    }
+//    protected void initSearch(Menu menu) {
+//        SearchView searchView;
+//        MenuItem searchItem = menu.findItem(R.id.menu_search_view);
+//        searchView = (SearchView) searchItem.getActionView();
+//        searchView.setSubmitButtonEnabled(true);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                return true;
+//            }
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                return true;
+//            }
+//        });
+//    }
 
     protected void replaceFragment(Fragment fragment , boolean isAddToBackStack){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragContainer , fragment);
+        transaction.replace(R.id.fragContainer, fragment);
+//        if (!fragment.isAdded()){
+//            transaction.hide(mainActivityViewModel.getCurrentFragment()).add(R.id.fragContainer, fragment);
+//        }else {
+//            transaction.hide(mainActivityViewModel.getCurrentFragment()).show(fragment);
+//        }
         if (isAddToBackStack){//判断是否加入返回栈，一般是左侧滑动导航栏进入的页面需要
             transaction.addToBackStack(null);
         }
         transaction.commit();
+//        mainActivityViewModel.setCurrentFragment(fragment);
     }
 
     protected void acquirePermissions(){
@@ -169,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.login:
                 replaceFragment(mainActivityViewModel.getBaseLoginFragment() , true);
                 binding.mDrawerLayout.closeDrawers();
+                break;
+            case R.id.logout:
+                mainActivityViewModel.getMainRepository().sendLogoutRequest();
+                Toast.makeText(this, "退出成功!", Toast.LENGTH_SHORT).show();
                 break;
         }
         return false;

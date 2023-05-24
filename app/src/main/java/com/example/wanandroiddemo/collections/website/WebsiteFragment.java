@@ -57,15 +57,20 @@ public class WebsiteFragment extends Fragment {
                 }
             }
         });
+        viewModel.getIsAdded().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    viewModel.getWebAdapter().notifyDataSetChanged();//添加成功后刷新布局
+                }
+            }
+        });
         viewModel.getRepository().requestCollectedWebList();
         binding.webAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewModel.getDialog(getContext()).show();
             }
-        });
-        viewModel.getDialog(getContext()).setOnDismissListener(dialog -> {
-            viewModel.getWebAdapter().notifyDataSetChanged();//没有刷新
         });
     }
 }

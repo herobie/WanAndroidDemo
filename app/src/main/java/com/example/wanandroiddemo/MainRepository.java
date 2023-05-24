@@ -26,6 +26,7 @@ import okhttp3.Response;
 public class MainRepository {
     private Context context;
     private final String loginUrl = "https://www.wanandroid.com/user/login";
+    private final String logoutUrl = "https://www.wanandroid.com/user/logout/json";
     private String username , password , repassword;
     private LoginBean loginBean;
     private MainActivityViewModel mainActivityViewModel;
@@ -45,10 +46,6 @@ public class MainRepository {
                     .add("username" , getUsername())
                     .add("password" , getPassword())
                     .build();
-//            requestBody = new FormBody.Builder()
-//                    .add("username" , "herobie")
-//                    .add("password" , "125612792")
-//                    .build();
         }else {
             requestBody = new FormBody.Builder()
                     .add("username" , getUsername())
@@ -57,6 +54,35 @@ public class MainRepository {
                     .build();
         }
         return requestBody;
+    }
+
+    /**
+     * 退出登录
+     */
+    public void sendLogoutRequest(){
+        Callback callback = new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .cookieJar(new CookieJarImpl(new PersistentCookieStore(context)))
+                        .build();
+                Request request = new Request.Builder()
+                        .url(logoutUrl)
+                        .build();
+                client.newCall(request).enqueue(callback);
+            }
+        }).start();
     }
 
     public void sendLoginRequest(RequestBody requestBody){
